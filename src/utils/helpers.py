@@ -31,3 +31,15 @@ def is_authenticated(request : Request, db : Session= Depends(get_db)):
     
     except InvalidTokenError:
             raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED,detail= "User is unauthorized!!")
+        
+
+def require_role(required_role: str):
+    def role_checker(user=Depends(is_authenticated)):
+        if user.role != required_role:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: insufficient permissions"
+            )
+        return user
+
+    return role_checker

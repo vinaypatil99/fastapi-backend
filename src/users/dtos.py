@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class UserDTO(BaseModel):
     name : str
     username : str
     password : str
     email : str
+    role: Optional[str] = "user"
     
     
 class UserResponseDTO(BaseModel):

@@ -3,11 +3,10 @@ from src.users.dtos import UserDTO,UserResponseDTO,LoginDTO
 from sqlalchemy.orm import Session
 from src.utils.db import get_db
 from src.users import controller
-from src.utils.helpers import is_authenticated
+from src.utils.helpers import is_authenticated,require_role
 
 
-
-user_routes = APIRouter(prefix="/user")
+user_routes = APIRouter(prefix="/user", tags=["Users"])
 
 
 @user_routes.post("/register",response_model= UserResponseDTO,status_code= status.HTTP_201_CREATED)

@@ -8,7 +8,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from src.utils.helpers import is_authenticated
 
-task_routes = APIRouter(prefix="/tasks")
+task_routes = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 # create new task
 @task_routes.post("/create",response_model= TaskResponseDTO, status_code= status.HTTP_201_CREATED)
