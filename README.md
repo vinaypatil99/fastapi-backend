@@ -1,45 +1,112 @@
-# 🚀 FastAPI Backend Project
+# 🚀 FastAPI Backend (RBAC Enabled)
 
 ## 📌 Overview
 
-This is a backend project built using FastAPI with PostgreSQL, JWT authentication, and Alembic for database migrations.
+This is a backend project built using FastAPI with authentication, role-based access control (RBAC), and task management features.
+
+---
+
+## 🛠 Tech Stack
+
+* FastAPI
+* SQLAlchemy
+* PostgreSQL
+* Alembic (migrations)
+* JWT Authentication
+* Pydantic Settings
+
+---
+
+## 🔐 Authentication & Authorization
+
+### ✅ JWT Authentication
+
+* Users can register and login
+* JWT token is generated on login
+* Token contains:
+
+  * User ID
+  * Role (admin/user)
+  * Expiry
+
+---
+
+### 🔒 Role-Based Access Control (RBAC)
+
+The system supports two roles:
+
+* **user**
+* **admin**
+
+#### 🔹 Features:
+
+* Role stored in database
+* Role included in JWT payload
+* Protected routes using dependency-based authorization
+
+---
+
+## 👑 Admin Features
+
+Admin-only APIs:
+
+* `GET /admin/users` → Get all users
+* `GET /admin/tasks` → Get all tasks
+* `GET /admin/stats` → Dashboard stats
+
+🔐 Protected using RBAC:
+Only users with role = `admin` can access these endpoints.
+
+---
+
+## 👤 User Features
+
+* Register new user
+* Login user
+* Create tasks
+* Manage own tasks
+
+---
+
+## 🔄 API Endpoints
+
+### 🔓 Public Routes
+
+* `POST /register` → Register user
+* `POST /login` → Login user
+
+---
+
+### 🔐 Protected Routes
+
+* Requires JWT token in header:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+### 👑 Admin Routes
+
+* `GET /admin/users`
+* `GET /admin/tasks`
+* `GET /admin/stats`
 
 ---
 
 ## ⚙️ Setup Instructions
 
-### 1️⃣ Clone the Repository
+### 1️⃣ Clone Repository
 
 ```bash
 git clone https://github.com/vinaypatil99/fastapi-backend.git
-cd <your-project-folder>
+cd fastapi-backend
 ```
 
 ---
 
-### 2️⃣ Create Virtual Environment (Recommended)
-
-```bash
-python -m venv venv
-```
-
-Activate it:
-
-* Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-* Mac/Linux:
-
-```bash
-source venv/bin/activate
-```
-
----
-
-### 3️⃣ Install Dependencies
+### 2️⃣ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -47,27 +114,20 @@ pip install -r requirements.txt
 
 ---
 
-## 🗄️ Database Setup
+### 3️⃣ Setup Environment Variables
 
-Make sure your PostgreSQL database is running and update your database URL in config/settings file.
+Create `.env` file:
+
+```
+DB_CONNECTION=postgresql://postgres:password@localhost:5432/db_name
+SECRET_KEY=your_secret_key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_SECONDS=30
+```
 
 ---
 
-## 🔄 Alembic Migrations
-
-### Initialize migrations (run only once)
-
-```bash
-alembic init migrations
-```
-
-### Create migration
-
-```bash
-alembic revision --autogenerate -m "your message"
-```
-
-### Apply migration
+### 4️⃣ Run Migrations
 
 ```bash
 alembic upgrade head
@@ -75,49 +135,46 @@ alembic upgrade head
 
 ---
 
-## 🔐 Authentication
-
-* Uses JWT (JSON Web Tokens)
-* Token is required in headers:
-
-```http
-Authorization: Bearer <your_token>
-```
-
----
-
-## ▶️ Run the Server
+### 5️⃣ Start Server
 
 ```bash
-uvicorn src.main:app --reload
+uvicorn main:app --reload
 ```
 
 ---
 
-## 📖 API Documentation
+### 6️⃣ Open Swagger UI
 
-Once server is running:
-
-* Swagger UI: http://127.0.0.1:8000/docs
-* ReDoc: http://127.0.0.1:8000/redoc
-
----
-
-## 📦 Generate Requirements File
-
-If you install new packages:
-
-```bash
-pip freeze > requirements.txt
+```
+http://localhost:8000/docs
 ```
 
 ---
 
-## 🧠 Notes
+## 🧠 Architecture
 
-* Always use virtual environment
-* Keep requirements.txt updated
-* Run migrations after model changes
-* Never commit secrets (use .env file)
+```
+src/
+ ├── users/
+ ├── tasks/
+ ├── admin/
+ ├── utils/
+```
+
+* `users` → user management
+* `tasks` → task management
+* `admin` → admin-only routes
+* `utils` → helpers, DB, settings
 
 ---
+
+## 🔐 Security Features
+
+* Password hashing using Argon2
+* JWT-based authentication
+* Role-based authorization (RBAC)
+* Protected admin routes
+* Secure token validation
+
+---
+
