@@ -1,0 +1,70 @@
+
+# ========================
+# Python cache files
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ========================
+# Virtual Environment
+# ========================
+venv/
+env/
+ENV/
+.venv/
+
+# ========================
+# Environment variables
+# ========================
+.env
+.env.*
+
+# ========================
+# IDE / Editor files
+# ========================
+.vscode/
+.idea/
+*.swp
+
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# Logs
+# ========================
+*.log
+
+# ========================
+# Test / cache
+# ========================
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ========================
+# Database (if any local sqlite used)
+# ========================
+*.sqlite3
+*.db
+
+# ========================
+# Alembic (important tweak)
+# ========================
+migrations/__pycache__/
+
+# NOTE:
+# DO NOT ignore migrations/versions if using Alembic properly
+# Only cache files are ignored
+
+# ========================
+# Python packaging
+# ========================
+dist/
+build/
+*.egg-info/
