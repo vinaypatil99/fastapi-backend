@@ -89,7 +89,7 @@ Authorization: Bearer <your_token>
 ## ▶️ Run the Server
 
 ```bash
-uvicorn main:app --reload
+uvicorn src.main:app --reload
 ```
 
 ---
