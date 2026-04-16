@@ -1,22 +1,14 @@
 from src.users.dtos import UserDTO,LoginDTO
 from src.users.models import UserModel
 from sqlalchemy.orm import Session
-from fastapi import HTTPException,status,Depends
-from pwdlib import PasswordHash
+from fastapi import HTTPException,status
 import jwt
 from src.utils.settings import settings
 from datetime import datetime,timedelta
-from src.utils.helpers import is_authenticated
 
-password_hash = PasswordHash.recommended()
+from src.utils.security import get_password_hash, verify_password
 
-# password -> hash password
-def get_password_hash(password):
-    return password_hash.hash(password)
 
-# verify password plain pass and hashed pass
-def verify_password(plain_password, hashed_password):
-    return password_hash.verify(plain_password, hashed_password)
 
 def register(body: UserDTO, db: Session, current_user=None):
     is_user = db.query(UserModel).filter(UserModel.username == body.username).first()
@@ -62,7 +54,6 @@ def login_user(body : LoginDTO,db : Session):
         raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED,detail= "Entered password is incorrect!!")
     
     exp_time = datetime.now() + timedelta(minutes = settings.ACCESS_TOKEN_EXPIRE_SECONDS)
-    print(exp_time.timestamp())
     
     payload = {
         "_id": user.id,

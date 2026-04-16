@@ -1,38 +1,49 @@
-from fastapi import APIRouter, Depends,status
+from fastapi import APIRouter, Depends, Query,status,HTTPException
 from sqlalchemy.orm import Session
 from src.utils.db import get_db
-from src.utils.helpers import require_role
+from src.utils.security import require_role
 from src.users.models import UserModel
 from src.tasks.models import TaskModel
+from src.utils.helpers import pagination
 
 admin_routes = APIRouter(prefix="/admin", tags=["Admin"])
 
 
 # get all users
-@admin_routes.get("/users",status_code= status.HTTP_200_OK)
+@admin_routes.get("/users", status_code=status.HTTP_200_OK)
 def get_all_users(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, le=100),
     db: Session = Depends(get_db),
     admin=Depends(require_role("admin"))
 ):
-    users = db.query(UserModel).all()
+    query = db.query(UserModel)
+
+    result = pagination(query, page, limit)
 
     return {
         "message": "All users fetched successfully",
-        "data": users
+        **result
     }
     
+    
 # get all tasks(of all users)
-@admin_routes.get("/tasks",status_code= status.HTTP_200_OK)
+@admin_routes.get("/tasks", status_code=status.HTTP_200_OK)
 def get_all_tasks(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, le=100),
     db: Session = Depends(get_db),
     admin=Depends(require_role("admin"))
 ):
-    tasks = db.query(TaskModel).all()
+    query = db.query(TaskModel)
+
+    result = pagination(query, page, limit)
 
     return {
         "message": "All tasks fetched successfully",
-        "data": tasks
+        **result
     }
+    
     
 # get stats
 @admin_routes.get("/stats",status_code= status.HTTP_200_OK)
@@ -60,7 +71,7 @@ def delete_user(
     user = db.query(UserModel).filter(UserModel.id == user_id).first()
 
     if not user:
-        return {"message": "User not found"}
+        raise HTTPException(status_code=404, detail="User details not found!!")
 
     db.delete(user)
     db.commit()

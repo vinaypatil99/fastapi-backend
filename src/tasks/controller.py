@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from src.tasks.models import TaskModel
 from src.users.models import UserModel
 from fastapi import HTTPException
+from src.utils.helpers import pagination
 
 
 def create_task(body : TaskDTO,db : Session,user : UserModel):
@@ -22,9 +23,9 @@ def create_task(body : TaskDTO,db : Session,user : UserModel):
     return new_task
 
 
-def get_all_tasks(db : Session,user : UserModel):
-    tasks = db.query(TaskModel).filter(TaskModel.user_id == user.id).all()
-    return tasks
+def get_all_tasks(db : Session,user : UserModel,page: int = 1, limit: int = 10):
+    query = db.query(TaskModel).filter(TaskModel.user_id == user.id)
+    return pagination(query, page, limit)
 
 
 def get_by_id(id : int,db : Session):

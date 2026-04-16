@@ -1,4 +1,4 @@
-from fastapi import APIRouter,status
+from fastapi import APIRouter, Query,status
 from src.tasks import controller
 from src.tasks.dtos import TaskDTO,TaskResponseDTO
 from src.users.models import UserModel
@@ -6,7 +6,7 @@ from fastapi import Depends
 from src.utils.db import get_db
 from typing import List
 from sqlalchemy.orm import Session
-from src.utils.helpers import is_authenticated
+from src.utils.security import is_authenticated
 
 task_routes = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -17,9 +17,20 @@ def create_task(body : TaskDTO, db : Session = Depends(get_db),user : UserModel 
 
 
 # get all tasks
-@task_routes.get("/all_tasks",response_model= List[TaskResponseDTO],status_code= status.HTTP_200_OK)
-def get_all_tasks(db:Session = Depends(get_db),user : UserModel = Depends(is_authenticated)):
-    return controller.get_all_tasks(db,user)
+@task_routes.get("/all_tasks",status_code= status.HTTP_200_OK)
+def get_all_tasks(db:Session = Depends(get_db),user : UserModel = Depends(is_authenticated),page: int = Query(1, ge=1),limit: int = Query(10, le=100),):
+    result = controller.get_all_tasks(db, user, page, limit)
+
+    if not result["data"]:
+        return {
+        "message": "No tasks found",
+        **result
+        }
+    
+    return {
+        "message": "Tasks fetched successfully",
+        **result
+    }
 
 
 # get task by id
