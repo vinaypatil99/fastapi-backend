@@ -18,7 +18,7 @@ def create_task(body : TaskDTO, db : Session = Depends(get_db),user : UserModel 
 
 # get all tasks
 @task_routes.get("/all_tasks",status_code= status.HTTP_200_OK)
-def get_all_tasks(db:Session = Depends(get_db),user : UserModel = Depends(is_authenticated),page: int = Query(1, ge=1),limit: int = Query(10, le=100),):
+def get_all_tasks(db:Session = Depends(get_db),user : UserModel = Depends(is_authenticated),page: int = Query(1, ge=1),limit: int = Query(10, le=100)):
     result = controller.get_all_tasks(db, user, page, limit)
 
     if not result["data"]:

@@ -48,10 +48,10 @@ def login_user(body : LoginDTO,db : Session):
     user = db.query(UserModel).filter(UserModel.username == body.username).first()
     
     if not user:
-        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED,detail= "Entered username is incorrect!!")
+        raise HTTPException(status_code=404, detail="User not found!!")
     
     if not verify_password(body.password,user.hash_password):
-        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED,detail= "Entered password is incorrect!!")
+        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED,detail= "Passwords do not match!!")
     
     exp_time = datetime.now() + timedelta(minutes = settings.ACCESS_TOKEN_EXPIRE_SECONDS)
     

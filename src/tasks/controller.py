@@ -41,10 +41,10 @@ def update_task(body : TaskDTO,id : int,db : Session,user : UserModel):
     task = db.query(TaskModel).get(id)
     
     if not task:
-        raise HTTPException(404,detail= "task not found!!")
-    
-    if task.user_id != user.id :
-        raise HTTPException(401,detail= "You cannot edit this task!!")
+        raise HTTPException(status_code=404, detail="Task not found!!")
+
+    if task.user_id != user.id:
+        raise HTTPException(status_code=403, detail="You are not allowed to edit this task!!")
         
     
     body = body.model_dump()

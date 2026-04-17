@@ -71,7 +71,7 @@ def delete_user(
     user = db.query(UserModel).filter(UserModel.id == user_id).first()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User details not found!!")
+        raise HTTPException(status_code=404, detail="User not found!!")
 
     db.delete(user)
     db.commit()
